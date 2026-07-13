@@ -1,2 +1,2 @@
-# desktop-nixos-config
-My desktop config for nixos
+# nixos-config
+My configuration for NixOS
