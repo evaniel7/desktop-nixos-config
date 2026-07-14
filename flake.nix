@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixvim.url = "github:nix-community/nixvim";
 
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
@@ -22,6 +23,8 @@
       modules = [
         # put nixpkgs config here (NOT via externally created pkgs)
         ({ ... }: { nixpkgs.config.allowUnfree = true; })
+
+        inputs.nixvim.nixosModules.nixvim
 
         ./configuration.nix
       ];

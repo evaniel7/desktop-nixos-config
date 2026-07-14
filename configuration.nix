@@ -8,6 +8,8 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./mail.nix
+      ./nixvim.nix
     ];
 
   # Bootloader.
@@ -76,6 +78,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
      	vim 
+        # neovim	
     # terminal emulator
     	kitty 
     # browsers
@@ -122,7 +125,11 @@
     # nix-specific
     	comma
     # work
-	rustup
+	cargo
+	rustc
+	clippy
+	rustfmt
+	gcc
 	rclone
     # Obsidian
     	obsidian
