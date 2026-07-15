@@ -4,11 +4,12 @@
   programs.nixvim = {
     enable = true;
 
-    colorschemes.catppuccin = {
-      enable = true; 
+    colorschemes.tokyonight = {
+      enable = true;
       settings = {
-        flavour = "mocha"; # latte, frappe, macchiato, mochatransparent_background
-        transparent_background = true;
+        style = "night"; # storm, moon, night, day
+        transparent = true;
+        terminal_colors = true; 
       };
     };
 

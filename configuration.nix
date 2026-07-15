@@ -81,6 +81,13 @@
         # neovim	
     # terminal emulator
     	kitty 
+    # ricing
+	quickshell
+	qt6.qtmultimedia  
+        pkgs.mpvpaper
+	socat
+	obs-studio
+	obs-cli
     # browsers
     	firefox
     	brave
@@ -160,7 +167,7 @@
 
   ];
 
-  #enable hyprland 
+  #enable hyprland
   programs.hyprland.enable = true;
 
   services.xserver.enable = true;
