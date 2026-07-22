@@ -65,7 +65,10 @@
   };  
 
   # file manager
-  programs.thunar.enable = true; 
+  programs.thunar.enable = true;
+  programs.xfconf.enable = true;  # needed for Thunar settings persistence
+
+ 
 
   # virtualization
    virtualisation.virtualbox.host.enable = true;
@@ -82,12 +85,15 @@
     # terminal emulator
     	kitty 
     # ricing
+  sshfs
 	quickshell
+  space-cadet-pinball
 	qt6.qtmultimedia  
         pkgs.mpvpaper
 	socat
 	obs-studio
 	obs-cli
+  jq
     # browsers
     	firefox
     	brave
