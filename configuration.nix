@@ -66,9 +66,8 @@
 
   # file manager
   programs.thunar.enable = true;
-  programs.xfconf.enable = true;  # needed for Thunar settings persistence
 
- 
+
 
   # virtualization
    virtualisation.virtualbox.host.enable = true;
