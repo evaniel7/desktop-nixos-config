@@ -20,7 +20,10 @@
   boot.loader.timeout = 5;
   boot.loader.systemd-boot.configurationLimit = 10;
 
-  networking.hostName = "hyprland"; # Define your hostname.
+  # Gaming optimizations
+  boot.kernel.sysctl."vm.swappiness" = 10;  # Reduce swapping for better gaming performance
+
+  networking.hostName = "neos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -57,11 +60,11 @@
   # nix flakes 
   nix.settings.experimental-features = [ "nix-command" "flakes" ]; 
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Define a user account. Don't forget to set a password with 'passwd'.
   users.users.evaniel = {
     isNormalUser = true;
     description = "Evan Harnak";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "gamemode" ];
   };  
 
   # file manager
@@ -79,46 +82,37 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-     	vim 
-        # neovim	
+    vim 	
     # terminal emulator
     	kitty 
     # ricing
-  sshfs
-	quickshell
-  space-cadet-pinball
-	qt6.qtmultimedia  
-        pkgs.mpvpaper
-	socat
-	obs-studio
-	obs-cli
-  jq
+      sshfs
+	    quickshell
+      space-cadet-pinball
+	    qt6.qtmultimedia  
+      pkgs.mpvpaper
+	    socat
+	    obs-studio
+	    obs-cli
+      jq
     # browsers
     	firefox
     	brave
-	vivaldi
+	    vivaldi
     # applications
-	pcloud
+	    pcloud
     # voice & chat
-	discord	
-	(vesktop.overrideAttrs (old: {
-          patches = (old.patches or []) ++ [
-            (fetchpatch {
-              url = "https://github.com/Vencord/Vesktop/pull/1251.patch";
-              hash = "sha256-WmnXRISB1vfnbvSXJlD6sGkl5HSBTHpye+ezLyidtHU=";
-            })
-          ];
-        }))
-        discordchatexporter-desktop
+	    discord	
+      vesktop	
     # audio
     	pavucontrol
-   	spotify 
-        strawberry
-	reaper
+   	  spotify 
+      strawberry
+	    reaper
     # quality of life
     	rofi
-	# wineWow64Packages.stable
-        wineWow64Packages.waylandFull
+	  # wineWow64Packages.stable
+      wineWow64Packages.waylandFull
     # virtualization 
     	qemu
     # tool
@@ -127,49 +121,53 @@
     	btop
     	gparted
     	git
-	grimblast
-	gimp
+	    grimblast
+    	gimp
+      zip
+      unzip
     # hyprland
-	hyprpaper
-        sddm-astronaut  
+	    hyprpaper
+      sddm-astronaut  
 
     	inputs.nix-index-database.packages."${system}".comma-with-db
     # nix-specific
     	comma
     # work
-	cargo
-	rustc
-	clippy
-	rustfmt
-	gcc
-	rclone
+	    cargo
+    	rustc
+	    clippy
+	    rustfmt
+	    gcc
+	    rclone
     # Obsidian
     	obsidian
     # video
-	vlc
-	ani-cli
+	    vlc
+	    ani-cli
+    # gaming
+	    libnotify  # for gamemode notifications
 
     # Other system-wide packages
     # Programming
-	uv
     	vscodium
-	jdk25
-	claude-code
-    (python3.withPackages (python-pkgs: with python-pkgs; [
-      	pandas
-	requests
-      # add other Python packages here
-    ]))    
-
-    (prismlauncher.override {
+	    jdk25
+	    claude-code
+    # python
+      uv
+      (python3.withPackages (python-pkgs: with python-pkgs; [
+        pandas
+	      requests
+        # add other Python packages here
+      ]))    
+    # mc
+      (prismlauncher.override {
           jdks = [
-            # javaPackages.compiler.temurin-bin.jdk-25
-            javaPackages.compiler.temurin-bin.jdk-21
-            javaPackages.compiler.openjdk17
-            javaPackages.compiler.openjdk8
-          ];
-        })
-
+          # javaPackages.compiler.temurin-bin.jdk-25
+          javaPackages.compiler.temurin-bin.jdk-21
+          javaPackages.compiler.openjdk17
+          javaPackages.compiler.openjdk8
+        ];
+      })
   ];
 
   #enable hyprland
@@ -197,6 +195,14 @@
     NIXOS_OZONE_WL = "1";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+
+    # NVIDIA shader caching - improves performance after first run
+    __GL_SHADER_DISK_CACHE = "1";
+    __GL_SHADER_DISK_CACHE_SKIP_CLEANUP = "1";
+
+    # DXVK settings - disable async to fix sparkle artifacts on reflections
+    DXVK_ASYNC = "0";
+    DXVK_STATE_CACHE = "1";
   };
 
   # pipewire
@@ -271,6 +277,24 @@
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  };
+
+  # GameMode - improves performance when gaming
+  programs.gamemode = {
+    enable = true;
+    settings = {
+      general = {
+        renice = 10;
+      };
+      gpu = {
+        apply_gpu_optimisations = "accept-responsibility";
+        gpu_device = 0;
+      };
+      custom = {
+        start = "${pkgs.libnotify}/bin/notify-send 'GameMode started'";
+        end = "${pkgs.libnotify}/bin/notify-send 'GameMode ended'";
+      };
+    };
   };
 
   # programs.gamescope.enable = true;
